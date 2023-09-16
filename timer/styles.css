@@ -20,6 +20,7 @@ body {
 }
 #module_1,
 #module_2 {
+    position: relative;
   width: 683px;
   height: 1024px;
 }
@@ -29,6 +30,10 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+.icon{
+    position: absolute;
+    top: 32.74px;
 }
 #module_2 {
   background: linear-gradient(180deg, #b90044 0%, #fba144 100%);
@@ -53,6 +58,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: border 0.3s;
 }
 .time {
   color: #fff;

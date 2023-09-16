@@ -17,6 +17,9 @@ const arrowDownRedHour = document.getElementById("arrow_red_down_hour");
 const arrowUpRedMinute = document.getElementById("arrow_red_up_minute");
 const arrowDownRedMinute = document.getElementById("arrow_red_down_minute");
 
+let savedStartBlue = 0;
+let savedStartRed = 0;
+
 const arrowElements = [
   "arrow_blue_up_hour",
   "arrow_blue_down_hour",
@@ -32,6 +35,8 @@ const redMinutesDigit = document.getElementById("red_minute_digits");
 const redTriangle = document.getElementById("redTriangle");
 const startRedButton = document.getElementById("red_start");
 const startRedButtonText = document.getElementById("red_btn_text");
+const leftBorder = document.getElementById('leftBorder');
+const rightBorder = document.getElementById('rightBorder');
 let redHour = 0;
 let redMinutes = 0;
 let redTotalSeconds = 0;
@@ -121,19 +126,22 @@ function startBlueTimer() {
   if (!blueIsRunning) {
     // Попытка загрузить значение из локального хранилища
     const savedBlueTimerValue = localStorage.getItem("blueTimerValue");
-
     if (savedBlueTimerValue && savedBlueTimerValue !== "00:00:00") {
       const [hh, mm, ss] = savedBlueTimerValue.split(":");
       blueTotalSeconds = parseInt(hh) * 3600 + parseInt(mm) * 60 + parseInt(ss);
+      savedStartBlue = blueTotalSeconds;
     } else {
       // Если значение в локальном хранилище отсутствует или равно "00:00:00", используем значение из blueHour и blueMinutes
       blueTotalSeconds = blueTotalSeconds || blueHour * 3600 + blueMinutes * 60;
+      savedStartBlue = blueTotalSeconds;
     }
 
     blueIsRunning = true;
     blueBtnStartText.textContent = "Pause";
     blueTriangle.setAttribute("src", "assets/icons/pause.svg");
     blueTimerInterval = setInterval(function () {
+      const percentage = (blueTotalSeconds / savedStartBlue) * 100;
+      leftBorder.style.borderWidth = `${(percentage / 10)}px`;
       if (blueTotalSeconds <= 0) {
         clearInterval(blueTimerInterval);
         blueIsRunning = false;
@@ -159,6 +167,7 @@ function resetBlueTimer() {
   blueTriangle.setAttribute("src", "assets/icons/Group.svg");
   let currentTimer = (blueHour*3600) + (blueMinutes*60);
   blueTotalSeconds = currentTimer;
+  savedStartBlue = blueTotalSeconds;
   updateBlueTimer();
 }
 
@@ -199,15 +208,19 @@ function startRedTimer() {
     if (savedRedTimerValue && savedRedTimerValue !== "00:00:00") {
       const [hh, mm, ss] = savedRedTimerValue.split(":");
       redTotalSeconds = parseInt(hh) * 3600 + parseInt(mm) * 60 + parseInt(ss);
+      savedStartBlue = blueTotalSeconds;
     } else {
       // Если значение в локальном хранилище отсутствует или равно "00:00:00", используем значение из redHour и redMinutes
       redTotalSeconds = redHour * 3600 + redMinutes * 60;
+      savedStartRed = redTotalSeconds;
     }
 
     redIsRunning = true;
     startRedButtonText.textContent = "Pause";
     redTriangle.setAttribute("src", "assets/icons/pause.svg");
     redTimerInterval = setInterval(function () {
+      const percentage = (redTotalSeconds / savedStartRed) * 100;
+      rightBorder.style.borderWidth = `${(percentage / 10)}px`;
       if (redTotalSeconds <= 0) {
         clearInterval(redTimerInterval);
         redIsRunning = false;
@@ -233,6 +246,7 @@ function resetRedTimer() {
   redTriangle.setAttribute("src", "assets/icons/Groupred.svg");
   let currentTimer2 = (redHour*3600) + (redMinutes*60);
   redTotalSeconds = currentTimer2;
+  savedStartRed = redTotalSeconds;
   updateRedTimer();
 }
 
