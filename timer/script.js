@@ -35,8 +35,8 @@ const redMinutesDigit = document.getElementById("red_minute_digits");
 const redTriangle = document.getElementById("redTriangle");
 const startRedButton = document.getElementById("red_start");
 const startRedButtonText = document.getElementById("red_btn_text");
-const leftBorder = document.getElementById('leftBorder');
-const rightBorder = document.getElementById('rightBorder');
+const leftBorder = document.getElementById("leftBorder");
+const rightBorder = document.getElementById("rightBorder");
 let redHour = 0;
 let redMinutes = 0;
 let redTotalSeconds = 0;
@@ -47,56 +47,131 @@ let blueTotalSeconds = 0;
 let blueTimerInterval;
 let blueIsRunning = false;
 
+let touchStartTimestamp;
+let touchInterval;
+
+function handleTouchStart(elId, event) {
+  event.preventDefault(); // Предотвращаем вызов контекстного меню
+  touchStartTimestamp = event.timeStamp;
+  touchInterval = setInterval(() => {
+    // Обработка удержания стрелки здесь
+    handleArrowClick(elId);
+  }, 50); // Интервал для быстрого увеличения/уменьшения (в миллисекундах)
+}
+
+function handleTouchEnd(elId, event) {
+  clearInterval(touchInterval); // Очищаем интервал при отпускании стрелки
+  const touchEndTimestamp = event.timeStamp;
+
+  // Если время удержания было коротким, то считаем это кликом
+  if (touchEndTimestamp - touchStartTimestamp < 50) {
+    handleArrowClick(elId);
+  }
+}
+
+arrowElements.forEach((elementId) => {
+  const arrowElement = document.getElementById(elementId);
+  if (arrowElement) {
+    arrowElement.addEventListener("touchstart", (event) =>
+      handleTouchStart(elementId, event)
+    );
+    arrowElement.addEventListener("click", () => handleArrowClick(elementId));
+    arrowElement.addEventListener("touchend", (event) =>
+      handleTouchEnd(elementId, event)
+    );
+  }
+});
+
 function handleArrowClick(elId) {
   let currentValue;
+  const currentBlueHour = parseInt(blueHourDigit.textContent);
+  const currentBlueMins = parseInt(blueMinutesDigit.textContent);
+const currentRedHour = parseInt(redHourDigit.textContent)
+const currentRedMins = parseInt(redMinutesDigit.textContent);
   switch (elId) {
     case "arrow_blue_up_hour":
-      blueHourDigit.textContent = parseInt(blueHourDigit.textContent) + 1;
-      blueHour = parseInt(blueHourDigit.textContent);
+      if (currentBlueHour === 99) {
+        blueHour = 0;
+        blueHourDigit.textContent = "0";
+      } else {
+        blueHourDigit.textContent = (currentBlueHour + 1)
+          .toString();
+        blueHour = currentBlueHour + 1;
+      }
       resetBlueTimer();
       break;
     case "arrow_blue_down_hour":
-      currentValue = parseInt(blueHourDigit.textContent);
-      currentValue = currentValue >= 1 ? currentValue - 1 : currentValue;
-      blueHourDigit.textContent = currentValue;
-      blueHour = currentValue;
+      if (currentBlueHour === 0) {
+        blueHour = 99;
+        blueHourDigit.textContent = "99";
+      } else {
+        blueHourDigit.textContent = (currentBlueHour - 1)
+          .toString();
+        blueHour = currentBlueHour - 1;
+      }
       resetBlueTimer();
       break;
     case "arrow_blue_up_minute":
-      blueMinutesDigit.textContent = parseInt(blueMinutesDigit.textContent) + 1;
-      blueMinutes = parseInt(blueMinutesDigit.textContent);
-      resetBlueTimer();
+      if (currentBlueMins === 59) {
+        blueMinutes = 0;
+        blueMinutesDigit.textContent = "0";
+      } else {
+        blueMinutesDigit.textContent = (currentBlueMins + 1)
+        .toString();
+        blueMinutes = currentBlueMins + 1;
+        resetBlueTimer();
+      }
       break;
     case "arrow_blue_down_minute":
-      currentValue = parseInt(blueMinutesDigit.textContent);
-      currentValue = currentValue >= 1 ? currentValue - 1 : currentValue;
-      blueMinutesDigit.textContent = currentValue;
-      blueMinutes = currentValue;
-      resetBlueTimer();
+      if (currentBlueMins === 0) {
+        blueMinutes = 59;
+        blueMinutesDigit.textContent = "59";
+      } else {
+        blueMinutesDigit.textContent = (currentBlueMins - 1)
+        .toString();
+        blueMinutes = currentBlueMins - 1;
+        resetBlueTimer();
+      }
       break;
     case "arrow_red_up_hour":
-      redHourDigit.textContent = parseInt(redHourDigit.textContent) + 1;
-      redHour = parseInt(redHourDigit.textContent);
-      resetRedTimer();
+      if (currentRedHour === 99) {
+        redHour = 0;
+        redHourDigit.textContent = "0";
+      } else {
+        redHourDigit.textContent = (currentRedHour + 1)
+          .toString();
+        redHour = currentRedHour + 1;
+      }
       break;
     case "arrow_red_down_hour":
-      currentValue = parseInt(redHourDigit.textContent);
-      currentValue = currentValue >= 1 ? currentValue - 1 : currentValue;
-      redHourDigit.textContent = currentValue;
-      redHour = currentValue;
-      resetRedTimer();
+      if (currentRedHour === 0) {
+        redHour = 99;
+        redHourDigit.textContent = "99";
+      } else {
+        redHourDigit.textContent = (currentRedHour - 1)
+          .toString();
+        redHour = currentRedHour - 1;
+      }
       break;
     case "arrow_red_up_minute":
-      redMinutesDigit.textContent = parseInt(redMinutesDigit.textContent) + 1;
-      redMinutes = parseInt(redMinutesDigit.textContent);
-      resetRedTimer();
+      if (currentRedMins === 59) {
+        redMinutes = 0;
+        redMinutesDigit.textContent = "0";
+      } else {
+        redMinutesDigit.textContent = (currentRedMins + 1)
+          .toString();
+          redMinutes = currentRedMins + 1;
+      }
       break;
     case "arrow_red_down_minute":
-      currentValue = parseInt(redMinutesDigit.textContent);
-      currentValue = currentValue >= 1 ? currentValue - 1 : currentValue;
-      redMinutesDigit.textContent = currentValue;
-      redMinutes = currentValue;
-      resetRedTimer();
+      if (currentRedMins === 0) {
+        redMinutes = 59;
+        redMinutesDigit.textContent = "59";
+      } else {
+        redMinutesDigit.textContent = (currentRedMins - 1)
+          .toString();
+          redMinutes = currentRedMins - 1;
+      }
       break;
     default:
       console.log(`Кликнули на неизвестный элемент`);
@@ -141,7 +216,7 @@ function startBlueTimer() {
     blueTriangle.setAttribute("src", "assets/icons/pause.svg");
     blueTimerInterval = setInterval(function () {
       const percentage = (blueTotalSeconds / savedStartBlue) * 100;
-      leftBorder.style.borderWidth = `${(percentage / 10)}px`;
+      leftBorder.style.borderWidth = `${percentage / 10}px`;
       if (blueTotalSeconds <= 0) {
         clearInterval(blueTimerInterval);
         blueIsRunning = false;
@@ -165,13 +240,14 @@ function resetBlueTimer() {
   blueIsRunning = false;
   blueBtnStartText.textContent = "Start";
   blueTriangle.setAttribute("src", "assets/icons/Group.svg");
-  let currentTimer = (blueHour*3600) + (blueMinutes*60);
+  let currentTimer = blueHour * 3600 + blueMinutes * 60;
   blueTotalSeconds = currentTimer;
   savedStartBlue = blueTotalSeconds;
   updateBlueTimer();
 }
 
-startBlueButton.addEventListener("click", function () {
+startBlueButton.addEventListener("click", function (event) {
+   event.preventDefault();
   if (blueTotalSeconds === 0 || !blueIsRunning) {
     startBlueTimer();
   } else {
@@ -220,7 +296,7 @@ function startRedTimer() {
     redTriangle.setAttribute("src", "assets/icons/pause.svg");
     redTimerInterval = setInterval(function () {
       const percentage = (redTotalSeconds / savedStartRed) * 100;
-      rightBorder.style.borderWidth = `${(percentage / 10)}px`;
+      rightBorder.style.borderWidth = `${percentage / 10}px`;
       if (redTotalSeconds <= 0) {
         clearInterval(redTimerInterval);
         redIsRunning = false;
@@ -244,13 +320,14 @@ function resetRedTimer() {
   redIsRunning = false;
   startRedButtonText.textContent = "Start";
   redTriangle.setAttribute("src", "assets/icons/Groupred.svg");
-  let currentTimer2 = (redHour*3600) + (redMinutes*60);
+  let currentTimer2 = redHour * 3600 + redMinutes * 60;
   redTotalSeconds = currentTimer2;
   savedStartRed = redTotalSeconds;
   updateRedTimer();
 }
 
-startRedButton.addEventListener("click", function () {
+startRedButton.addEventListener("click", function (event) {
+  event.preventDefault();
   if (redTotalSeconds === 0 || !redIsRunning) {
     startRedTimer();
   } else {
