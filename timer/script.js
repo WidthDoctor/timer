@@ -142,6 +142,7 @@ const currentRedMins = parseInt(redMinutesDigit.textContent);
           .toString();
         redHour = currentRedHour + 1;
       }
+      resetRedTimer();
       break;
     case "arrow_red_down_hour":
       if (currentRedHour === 0) {
@@ -152,6 +153,7 @@ const currentRedMins = parseInt(redMinutesDigit.textContent);
           .toString();
         redHour = currentRedHour - 1;
       }
+      resetRedTimer();
       break;
     case "arrow_red_up_minute":
       if (currentRedMins === 59) {
@@ -162,6 +164,7 @@ const currentRedMins = parseInt(redMinutesDigit.textContent);
           .toString();
           redMinutes = currentRedMins + 1;
       }
+      resetRedTimer();
       break;
     case "arrow_red_down_minute":
       if (currentRedMins === 0) {
@@ -172,6 +175,7 @@ const currentRedMins = parseInt(redMinutesDigit.textContent);
           .toString();
           redMinutes = currentRedMins - 1;
       }
+      resetRedTimer();
       break;
     default:
       console.log(`Кликнули на неизвестный элемент`);
